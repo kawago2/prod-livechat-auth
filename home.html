@@ -1,0 +1,125 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+    <script>
+    const rcwidgetcss = document.createElement('link');
+    rcwidgetcss.rel = 'stylesheet';
+    rcwidgetcss.href = 'https://webchatdev.raisecall.com/rcwidget/raise-call-widget.css';
+    document.head.prepend(rcwidgetcss);
+    const rcwidget = document.createElement('script');
+    rcwidget.src = 'https://webchatdev.raisecall.com/rcwidget/raise-call-widget.umd.js';
+    document.head.prepend(rcwidget);
+    rcwidget.onload = function () {
+        RaiseCallWidget({
+        webchatUUID: '32d5c734-a953-42ff-aa09-a5a95d6772e5',
+        orgUUID: '03420026-0a27-4378-b036-c2cf1eb76a36',
+        });
+    };
+    </script>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" href="index.html">Beranda</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="home.html">Home</a>
+          </li>
+        </ul>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
+          <button class="btn btn-outline-success" type="submit">Search</button>
+        </form>
+      </div>
+    </div>
+  </nav>
+  <section class="container d-flex w-100 h-100 align-items-center justify-content-center">
+    Ini Halaman Home
+  </section>
+  <div id="message"></div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <script>
+    const secretCode = 'CX6npqLM02Nv5nvZ';
+    const widget = document.getElementById('raisecall-embedded-widget');
+    const loginForm = document.getElementById('loginForm');
+    if (widget) {
+      widget.style.display = localStorage.getItem('raisecall_token') ? 'block' : 'none';
+    }
+    if (loginForm) {
+      loginForm.style.display = localStorage.getItem('raisecall_token') ? 'none' : 'flex';
+    }
+    const secretKey = CryptoJS.enc.Utf8.parse(secretCode);
+    function encryptUserData(user) {
+      const plaintext = JSON.stringify(user);
+      const encrypted = CryptoJS.AES.encrypt(plaintext, secretKey, {
+        mode: CryptoJS.mode.ECB,
+        padding: CryptoJS.pad.Pkcs7,
+      }).toString();
+      return encrypted;
+    }
+    // Simulated users.json (mock database)
+    let users = [];
+
+    // Load the JSON from an external file
+    fetch("./database-dummy.json")
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Failed to load users.json");
+        }
+        return response.json();
+      })
+      .then(data => {
+        users = data;
+      })
+      .catch(error => {
+        console.error("Error loading JSON:", error);
+      });
+
+    const form = document.getElementById("loginForm");
+    const messageDiv = document.getElementById("message");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const email = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      const foundUser = users.find(
+        user => user.username === email && user.password === password
+      );
+
+      if (foundUser) {
+        const { password, ...newBody } = foundUser;
+        const dataUser = encryptUserData(newBody);
+        localStorage.setItem('raisecall_token', dataUser);
+        messageDiv.textContent = "✅ Login successful!";
+        messageDiv.style.color = "green";
+        setTimeout(() => {
+          window.location.reload();
+        }, 500);
+        // You can redirect or do something else here
+      } else {
+        messageDiv.textContent = "❌ Invalid email or password.";
+        messageDiv.style.color = "red";
+      }
+    });
+  </script>
+</body>
+
+</html>

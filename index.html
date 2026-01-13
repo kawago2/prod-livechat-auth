@@ -10,10 +10,10 @@
   <script>
   const rcwidgetcss = document.createElement('link');
   rcwidgetcss.rel = 'stylesheet';
-  rcwidgetcss.href = 'https://webchatdev.raisecall.com/rcwidget/raise-call-widget.css';
+  rcwidgetcss.href = 'https://app.raisecall.com/rcwidget/raise-call-widget.css';
   document.head.prepend(rcwidgetcss);
   const rcwidget = document.createElement('script');
-  rcwidget.src = 'https://webchatdev.raisecall.com/rcwidget/raise-call-widget.umd.js';
+  rcwidget.src = 'https://app.raisecall.com/rcwidget/raise-call-widget.umd.js';
   document.head.prepend(rcwidget);
   rcwidget.onload = function () {
     RaiseCallWidget({
